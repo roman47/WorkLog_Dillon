@@ -198,7 +198,7 @@ def load_work_log(search_type):
             if log["task_title"] != search_exact and log["notes"] != search_exact:
                 log["show_log"] = 0
         # for log in all_work_logs:
-        #     print(log["task_title"] + " " + log["notes"] + " " + str(log["show_log"]))
+         #   print(log["task_title"] + " " + log["notes"] + " " + str(log["show_log"]))
 
     elif search_type == 'p':
         search_pattern = input("What is your pattern (regex) search string?>")
@@ -215,22 +215,32 @@ def display_entries(search_type):
     # When displaying the entries, the entries should be displayed in a readable format with the date, task name, time
     # spent, and notes information.
     work_logs = load_work_log(search_type)
+
+    if sum(item['show_log'] for item in work_logs) == 0:
+        print("Your search returned no values, please try again")
+        return
+
+    # for log in work_logs:
+    #     print(log["task_title"] + " " + log["notes"] + " " + str(log["show_log"]))
     choice = ''
     i = 0
     while choice != 'r':
+        # print("i: " + str(i))
+        log = work_logs[i]
         # Entries are displayed one at a time with the ability to page through records (previous/next/back).
-        print("i: " + str(i) + " len(work_logs) " + str(len(work_logs)))
-        if (i < len(work_logs) and i >= 0):
-            log = work_logs[i]
-
         if log["show_log"]:
             show_menu_header("Display Entries")
             print("Date: {} \nTask Title: {} \nMinutes Spent: {} \nNotes(Optional): {}"
                 .format(log["date"], log["task_title"], str(log["minutes"]), log["notes"]))
             choice = input("""What would like you like to do? [E]dit record / [D]elete record / [N]ext record / [P]revious record / [R]eturn to Main Menu>""").lower()
+        else:
+            if choice == 'n' or choice == 'p':
+                choice = choice
+            else:
+                choice = 'n'
         #Entries can be deleted and edited, letting user change the date, task name, time spent, and/or notes.
         if choice == 'e':
-            print("You chose to edit")
+            # print("You chose to edit")
             edited_entry_information = gather_entry_information(True)
             log["date"] = edited_entry_information[0]
             log["task_title"] = edited_entry_information[1]
@@ -242,17 +252,19 @@ def display_entries(search_type):
             else:
                 # print("You chose go to delete the record")
                 work_logs.remove(log)
+                overwrite_work_log(work_logs)
+                break
         # Entries are displayed one at a time with the ability to page through records (previous/next/back).
         elif choice == 'n':
             # print("You chose go to the next record")
-            if i == len(work_logs):
+            if (i == len(work_logs)-1):
                 i = 0
             else:
                 i += 1
         elif choice == 'p':
             # print("You chose go to the previous record")
-            if i == 0:
-                i = len(work_logs)
+            if (i == 0):
+                i = len(work_logs)-1
             else:
                 i -= 1
         elif choice == 'r':
