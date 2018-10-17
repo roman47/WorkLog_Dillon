@@ -36,6 +36,7 @@ def run_main_menu():
         # Menu has a “quit” option to exit the program.
         elif choice == 'q':
             print("We are sorry to see you go, goodbye.")
+            exit()
         else:
             print("You did not enter a valid choice, please only enter letters from the list")
 
@@ -46,7 +47,7 @@ def display_find_menu():
     choice = ''
     while choice != 'r':
         show_menu_header("Find Menu")
-        choice = input("""Please enter a letter from the choices below
+        choice = input("""Please enter a letter from the choices below (if your search returns no value, you will need to search again)
 Find by [D]ate
 Find by [T]ime spent
 Find by [E]xact search
@@ -271,6 +272,7 @@ def display_entries(search_type):
             # print("You chose to return to the main menu")
             overwrite_work_log(work_logs)
             run_main_menu()
+            break
         else:
             print("You did not enter a valid choice, please only enter letters from the list")
 
